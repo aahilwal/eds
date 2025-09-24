@@ -1,27 +1,27 @@
-import { fetchPlaceholders, getMetadata } from '../../scripts/aem.js';
-
+// blocks/carousel/carousel.js - Fixed version
 export default async function decorate(block) {
   try {
-    const placeholders = await fetchPlaceholders(getMetadata('locale'));
-    const { btnNxt, btnPre } = placeholders;
-
-    console.log('placeholders ---> ', placeholders, btnNxt, btnPre);
+    // Temporary hardcoded values - aem.js fix hone tak
+    const btnNxt = 'Next';
+    const btnPre = 'Previous';
+    
+    console.log('Carousel initializing with:', btnNxt, btnPre);
     
     const rows = [...block.children];
     
     // Pehle buttons create karein
     const nextBtn = document.createElement('button');
     nextBtn.classList.add('btn', 'btn-next');
-    nextBtn.textContent = btnNxt || 'Next'; // Fallback agar placeholder na mile
+    nextBtn.textContent = btnNxt;
     
     const prevBtn = document.createElement('button');
     prevBtn.classList.add('btn', 'btn-prev');
-    prevBtn.textContent = btnPre || 'Previous'; // Fallback agar placeholder na mile
+    prevBtn.textContent = btnPre;
     
     // Slides process karein
     const slides = [];
     rows.forEach((row, r) => {
-      if (r > 0 && r < rows.length - 1) { // Middle rows ko slides banayenge
+      if (r > 0 && r < rows.length - 1) {
         row.classList.add('slide');
         [...row.children].forEach((col, c) => {
           if (c === 1) {
@@ -48,20 +48,12 @@ export default async function decorate(block) {
     const maxSlide = slides.length - 1;
     
     nextBtn.addEventListener('click', function () {
-      if (curSlide === maxSlide) {
-        curSlide = 0;
-      } else {
-        curSlide++;
-      }
+      curSlide = curSlide === maxSlide ? 0 : curSlide + 1;
       updateSlidePosition();
     });
     
     prevBtn.addEventListener('click', function () {
-      if (curSlide === 0) {
-        curSlide = maxSlide;
-      } else {
-        curSlide--;
-      }
+      curSlide = curSlide === 0 ? maxSlide : curSlide - 1;
       updateSlidePosition();
     });
     
